@@ -1,0 +1,4 @@
+{
+    "id": "hudson_app",
+    "engine": "wildfly-10.0.0"
+}

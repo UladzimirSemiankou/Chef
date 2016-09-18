@@ -30,7 +30,7 @@ execute 'extract_jboss' do
   not_if { File.exists?("/opt/wildfly-10.0.0.CR5/bin/standalone.sh") }
 end
 
-remote_file '/tmp/testweb.zip' do
+remote_file '/tmp/hudson.zip' do
   source node['jboss']['app_url']
   owner node['jboss']['user']
   group node['jboss']['group']
@@ -39,7 +39,14 @@ remote_file '/tmp/testweb.zip' do
 end
 
 execute 'extract_app' do
-  command "unzip -o /tmp/testweb.zip -d #{node['jboss']['app_dir']}"
+  command "unzip -o /tmp/hudson.zip -d #{node['jboss']['app_dir']}"
+end
+
+template "#{node['jboss']['app_dir']}/hudson/hudson.xml" do
+  source "hudson.erb"
+  variables ({
+  'engine' => data_bag_item('hudson_bag', 'hudson_app')['engine']
+})
 end
 
 template '/etc/init.d/jboss' do
